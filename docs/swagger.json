@@ -1,0 +1,325 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ticket Management System API",
+    "description": "This is a Ticket Management System API",
+    "contact": {
+      "email": "punnarat.ratt@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/mzcxn/ticket-management-system/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "http://localhost:5000/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "tickets",
+      "description": "Operations about tickets"
+    }
+  ],
+  "paths": {
+    "/tickets": {
+      "get": {
+        "tags": [
+          "tickets"
+        ],
+        "summary": "List all tickets and sort by given method",
+        "operationId": "listTickets",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "method how to sort the result",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "status",
+                "updated_at"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ticket"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "tickets"
+        ],
+        "summary": "Create ticket",
+        "operationId": "createTicket",
+        "requestBody": {
+          "description": "created ticket object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/tickets/{id}": {
+      "get": {
+        "tags": [
+          "tickets"
+        ],
+        "summary": "List ticket by ID",
+        "description": "Return a single ticket",
+        "operationId": "listTicketByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of ticket to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "tickets"
+        ],
+        "summary": "Update ticket information",
+        "operationId": "updateTicketByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of ticket to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated ticket object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    },
+    "/tickets/{id}/status": {
+      "patch": {
+        "tags": [
+          "tickets"
+        ],
+        "summary": "Update ticket status",
+        "operationId": "updateTicketStatusByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of ticket to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated ticket object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTicketStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Ticket": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5
+          },
+          "title": {
+            "type": "string",
+            "example": "Doctor Strange"
+          },
+          "status": {
+            "type": "string",
+            "description": "ticket status",
+            "example": "PENDING",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "RESOLVED",
+              "REJECTED"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "example": "While on a journey of physical and spiritual healing, a brilliant neurosurgeon is drawn into the world of the mystic arts."
+          },
+          "contact_information": {
+            "type": "string",
+            "example": "Stephen, +1-202-555-0124"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-05-13T07:40:16.52612Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-05-13T07:47:01.600636Z"
+          }
+        }
+      },
+      "CreateTicketRequest": {
+        "required": [
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Doctor Strange"
+          },
+          "description": {
+            "type": "string",
+            "example": "While on a journey of physical and spiritual healing, a brilliant neurosurgeon is drawn into the world of the mystic arts."
+          },
+          "contact_information": {
+            "type": "string",
+            "example": "Stephen, +1-202-555-0124"
+          }
+        }
+      },
+      "UpdateTicketRequest": {
+        "required": [
+          "contact_information",
+          "description",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Interstellar"
+          },
+          "description": {
+            "type": "string",
+            "example": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival."
+          },
+          "contact_information": {
+            "type": "string",
+            "example": "Cooper, +1-202-555-0147"
+          }
+        }
+      },
+      "UpdateTicketStatusRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "ticket status",
+            "example": "ACTIVE",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "RESOLVED",
+              "REJECTED"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

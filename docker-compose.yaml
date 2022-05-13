@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  ticket-db:
+    container_name: ticket-db
+    image: postgres:alpine
+    restart: always
+    ports:
+      - "54320:5432"
+    environment:
+      - POSTGRES_USER=ticket-admin
+      - POSTGRES_PASSWORD=4o1QcokHXluy2og6TMK3sCB9
+      - POSTGRES_DB=ticket
+    volumes:
+      - ./configs/ddl.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  ticket-service:
+    container_name: ticket-service
+    build: ./
+    restart: always
+    depends_on:
+      - ticket-db
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_USER=ticket-admin
+      - DB_PASSWORD=4o1QcokHXluy2og6TMK3sCB9
+      - DB_ENDPOINT=ticket-db:5432
+      - DB_INIT=ticket
